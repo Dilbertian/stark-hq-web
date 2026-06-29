@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StarkRobotics — Coming Soon</title>
+  <meta name="description" content="Building the Machines of Tomorrow. Coming Soon." />
+  <style>
+    :root {
+      --bg:         #0a0805;
+      --accent:     #ff6b2b;
+      --accent-dim: #cc4400;
+      --text:       #ffffff;
+      --muted:      #8a7060;
+      --grid:       rgba(255, 107, 43, 0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      overflow: hidden;
+    }
+
+    /* Circuit grid background */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    /* Scanline overlay */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 0.35em 1em;
+      margin-bottom: 2.5rem;
+      opacity: 0.85;
+    }
+
+    .wordmark {
+      font-size: clamp(2.2rem, 7vw, 5.2rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-shadow:
+        0 0 30px rgba(255, 107, 43, 0.45),
+        0 0 80px rgba(255, 107, 43, 0.15);
+      line-height: 1;
+      margin-bottom: 1.2rem;
+    }
+
+    .tagline {
+      font-size: clamp(0.85rem, 2.5vw, 1.15rem);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: 0.75;
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 0 auto 2.5rem;
+      opacity: 0.5;
+    }
+
+    .contact {
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact:hover { color: var(--accent); }
+
+    /* Corner brackets */
+    .corner-tl, .corner-br {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      opacity: 0.3;
+    }
+    .corner-tl {
+      top: 1.5rem; left: 1.5rem;
+      border-top: 1px solid var(--accent);
+      border-left: 1px solid var(--accent);
+    }
+    .corner-br {
+      bottom: 1.5rem; right: 1.5rem;
+      border-bottom: 1px solid var(--accent);
+      border-right: 1px solid var(--accent);
+    }
+
+    /* Circuit node dots at grid intersections — decorative */
+    .node-dot {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.25;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scanlines { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .wordmark { letter-spacing: 0.04em; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="scanlines"></div>
+
+  <!-- Decorative circuit nodes at fixed positions -->
+  <div class="node-dot" style="top:20%;  left:15%"></div>
+  <div class="node-dot" style="top:20%;  left:85%"></div>
+  <div class="node-dot" style="top:80%;  left:15%"></div>
+  <div class="node-dot" style="top:80%;  left:85%"></div>
+  <div class="node-dot" style="top:50%;  left:5%"></div>
+  <div class="node-dot" style="top:50%;  left:95%"></div>
+  <div class="node-dot" style="top:10%;  left:50%"></div>
+  <div class="node-dot" style="top:90%;  left:50%"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+
+  <main class="stage">
+    <div class="badge">Coming Soon</div>
+    <h1 class="wordmark">StarkRobotics</h1>
+    <p class="tagline">Building the Machines of Tomorrow</p>
+    <div class="divider"></div>
+    <a class="contact" href="mailto:info@starkrobotics.ai">info@starkrobotics.ai</a>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StarkForge — Coming Soon</title>
+  <meta name="description" content="The Intelligence Layer for the Agentic Fleet. Coming Soon." />
+  <style>
+    :root {
+      --bg:         #050a0f;
+      --accent:     #00d4ff;
+      --accent-dim: #0088aa;
+      --text:       #ffffff;
+      --muted:      #6b8599;
+      --node:       rgba(0, 212, 255, 0.6);
+      --edge:       rgba(0, 212, 255, 0.12);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 0.35em 1em;
+      margin-bottom: 2.5rem;
+      opacity: 0.85;
+    }
+
+    .wordmark {
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-shadow:
+        0 0 30px rgba(0, 212, 255, 0.4),
+        0 0 80px rgba(0, 212, 255, 0.15);
+      line-height: 1;
+      margin-bottom: 1.2rem;
+    }
+
+    .tagline {
+      font-size: clamp(0.85rem, 2.5vw, 1.15rem);
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: 0.75;
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 0 auto 2.5rem;
+      opacity: 0.5;
+    }
+
+    .contact {
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact:hover { color: var(--accent); }
+
+    .corner-tl, .corner-br {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      opacity: 0.3;
+    }
+    .corner-tl {
+      top: 1.5rem; left: 1.5rem;
+      border-top: 1px solid var(--accent);
+      border-left: 1px solid var(--accent);
+    }
+    .corner-br {
+      bottom: 1.5rem; right: 1.5rem;
+      border-bottom: 1px solid var(--accent);
+      border-right: 1px solid var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      canvas { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="net"></canvas>
+
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+
+  <main class="stage">
+    <div class="badge">Coming Soon</div>
+    <h1 class="wordmark">StarkForge</h1>
+    <p class="tagline">The Intelligence Layer for the Agentic Fleet</p>
+    <div class="divider"></div>
+    <a class="contact" href="mailto:info@starkforge.ai">info@starkforge.ai</a>
+  </main>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('net');
+      const ctx    = canvas.getContext('2d');
+
+      const ACCENT   = '0, 212, 255';
+      const NODE_R   = 2;
+      const COUNT    = 60;
+      const MAX_DIST = 160;
+      const SPEED    = 0.35;
+
+      let W, H, nodes;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function makeNode() {
+        return {
+          x:  Math.random() * W,
+          y:  Math.random() * H,
+          vx: (Math.random() - 0.5) * SPEED,
+          vy: (Math.random() - 0.5) * SPEED,
+        };
+      }
+
+      function init() {
+        resize();
+        nodes = Array.from({ length: COUNT }, makeNode);
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, W, H);
+
+        // move
+        for (const n of nodes) {
+          n.x += n.vx;
+          n.y += n.vy;
+          if (n.x < 0 || n.x > W) n.vx *= -1;
+          if (n.y < 0 || n.y > H) n.vy *= -1;
+        }
+
+        // edges
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx   = nodes[i].x - nodes[j].x;
+            const dy   = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+              const alpha = (1 - dist / MAX_DIST) * 0.18;
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.strokeStyle = `rgba(${ACCENT}, ${alpha})`;
+              ctx.lineWidth   = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // nodes
+        for (const n of nodes) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, NODE_R, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${ACCENT}, 0.55)`;
+          ctx.fill();
+        }
+
+        requestAnimationFrame(tick);
+      }
+
+      window.addEventListener('resize', () => { resize(); });
+      init();
+      tick();
+    })();
+  </script>
+
+</body>
+</html>
